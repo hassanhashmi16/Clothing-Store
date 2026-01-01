@@ -19,7 +19,7 @@ export default function Hero() {
                     setProducts(response.data.data)
                 } else if (Array.isArray(response.data)) {
                     // Fallback in case the user's change didn't stick or for older versions
-                    setProducts(response.data)
+                    setProducts(response.data )
                 }
             } catch (error) {
                 console.error('Error fetching products for carousel:', error)
@@ -70,7 +70,7 @@ export default function Hero() {
     }
 
     return (
-        <section className="relative h-screen w-full overflow-hidden bg-black">
+        <section className="relative h-[85vh] md:h-[90vh] min-h-[600px] w-full overflow-hidden bg-black">
             {/* Carousel Slides */}
             {products.map((product, index) => (
                 <div
@@ -88,22 +88,22 @@ export default function Hero() {
                     <div className="absolute inset-0 bg-black/30" />
 
                     {/* Content Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center text-center px-4">
+                    <div className="absolute inset-0 flex items-center justify-center text-center px-4 pt-20">
                         <div className={`max-w-4xl transition-all duration-1000 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
-                            <p className="text-white/80 text-xs md:text-sm font-medium tracking-[0.4em] uppercase mb-6">
+                            <p className="text-white/80 text-[10px] md:text-xs font-medium tracking-[0.4em] uppercase mb-4 md:mb-6">
                                 Featured Collection
                             </p>
-                            <h1 className="text-white text-5xl md:text-9xl font-serif tracking-tighter mb-10 leading-none">
+                            <h1 className="text-white text-3xl md:text-7xl lg:text-8xl font-serif tracking-tighter mb-8 md:mb-10 leading-tight">
                                 {product.name}
                             </h1>
                             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                                 <button
                                     onClick={scrollToProducts}
-                                    className="px-12 py-5 bg-white text-foreground hover:bg-[#f9f7f2] hover:-translate-y-1 transition-all duration-300 text-xs font-bold tracking-[0.2em] uppercase rounded-none shadow-xl"
+                                    className="px-8 md:px-12 py-4 md:py-5 bg-white text-foreground hover:bg-[#f9f7f2] hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none shadow-xl"
                                 >
-                                    Featured Collection
+                                    Shop Now
                                 </button>
-                                <button className="px-12 py-5 bg-transparent text-white border border-white/40 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 text-xs font-bold tracking-[0.2em] uppercase rounded-none backdrop-blur-md">
+                                <button className="px-8 md:px-12 py-4 md:py-5 bg-transparent text-white border border-white/40 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none backdrop-blur-md">
                                     View Details
                                 </button>
                             </div>

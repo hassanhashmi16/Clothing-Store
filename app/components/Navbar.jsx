@@ -31,7 +31,7 @@ export default function Navbar() {
                     <div className="flex md:hidden">
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="text-foreground hover:text-accent-brown transition-colors"
+                            className={`${isScrolled ? 'text-foreground' : 'text-white'} hover:text-accent-brown transition-colors`}
                         >
                             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
@@ -43,7 +43,7 @@ export default function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className="nav-link text-sm font-medium tracking-wide text-foreground/80 hover:text-foreground"
+                                className={`nav-link text-sm font-medium tracking-wide ${isScrolled ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}
                             >
                                 {link.name}
                             </Link>
@@ -53,7 +53,7 @@ export default function Navbar() {
                     {/* Center Section: Logo */}
                     <div className="absolute left-1/2 transform -translate-x-1/2">
                         <Link href="/" className="group">
-                            <span className="text-2xl font-serif tracking-tighter text-foreground group-hover:text-accent-brown transition-colors">
+                            <span className={`text-2xl font-serif tracking-tighter ${isScrolled ? 'text-foreground' : 'text-white'} group-hover:text-accent-brown transition-colors`}>
                                 ELEGANCE
                             </span>
                         </Link>
@@ -61,13 +61,13 @@ export default function Navbar() {
 
                     {/* Right Section: Icons */}
                     <div className="flex items-center space-x-5">
-                        <button className="text-foreground/80 hover:text-foreground transition-colors hidden sm:block">
+                        <button className={`${isScrolled ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors hidden sm:block`}>
                             <Search size={20} strokeWidth={1.5} />
                         </button>
-                        <button className="text-foreground/80 hover:text-foreground transition-colors">
+                        <button className={`${isScrolled ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}>
                             <User size={20} strokeWidth={1.5} />
                         </button>
-                        <button className="text-foreground/80 hover:text-foreground transition-colors relative">
+                        <button className={`${isScrolled ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors relative`}>
                             <ShoppingBag size={20} strokeWidth={1.5} />
                             <span className="absolute -top-1 -right-1 bg-accent-brown text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                                 0
