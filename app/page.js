@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar";
 import ProductGrid from "./components/ProductsGrid";
 import Hero from "./components/Hero";
+import Footer from "./components/Footer";
 
 export default async function Home() {
 
@@ -9,6 +10,7 @@ export default async function Home() {
       <Navbar />
       <Hero />
       <ProductGrid />
+      <Footer />
     </>
   );
 }

@@ -1,10 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { usePathname  } from 'next/navigation'
 import Link from 'next/link'
 import { ShoppingBag, User, Search, Menu, X } from 'lucide-react'
 
 export default function Navbar() {
+    const pathname = usePathname()
+    const isHome = pathname === '/'
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -16,6 +19,8 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
+    const shouldShowGlass = !isHome || isScrolled
+
     const navLinks = [
         { name: 'Men', href: '/men' },
         { name: 'Women', href: '/women' },
@@ -24,14 +29,14 @@ export default function Navbar() {
     ]
 
     return (
-        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-nav py-3' : 'bg-transparent py-5'}`}>
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${shouldShowGlass ? 'glass-nav py-3' : 'bg-transparent py-5'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Mobile Menu Button */}
                     <div className="flex md:hidden">
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className={`${isScrolled ? 'text-foreground' : 'text-white'} hover:text-accent-brown transition-colors`}
+                            className={`${shouldShowGlass ? 'text-foreground' : 'text-white'} hover:text-accent-brown transition-colors`}
                         >
                             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
@@ -43,7 +48,7 @@ export default function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className={`nav-link text-sm font-medium tracking-wide ${isScrolled ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}
+                                className={`nav-link text-sm font-medium tracking-wide ${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}
                             >
                                 {link.name}
                             </Link>
@@ -53,7 +58,7 @@ export default function Navbar() {
                     {/* Center Section: Logo */}
                     <div className="absolute left-1/2 transform -translate-x-1/2">
                         <Link href="/" className="group">
-                            <span className={`text-2xl font-serif tracking-tighter ${isScrolled ? 'text-foreground' : 'text-white'} group-hover:text-accent-brown transition-colors`}>
+                            <span className={`text-2xl font-serif tracking-tighter ${shouldShowGlass ? 'text-foreground' : 'text-white'} group-hover:text-accent-brown transition-colors`}>
                                 ELEGANCE
                             </span>
                         </Link>
@@ -61,13 +66,13 @@ export default function Navbar() {
 
                     {/* Right Section: Icons */}
                     <div className="flex items-center space-x-5">
-                        <button className={`${isScrolled ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors hidden sm:block`}>
+                        <button className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors hidden sm:block`}>
                             <Search size={20} strokeWidth={1.5} />
                         </button>
-                        <button className={`${isScrolled ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}>
+                        <button className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}>
                             <User size={20} strokeWidth={1.5} />
                         </button>
-                        <button className={`${isScrolled ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors relative`}>
+                        <button className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors relative`}>
                             <ShoppingBag size={20} strokeWidth={1.5} />
                             <span className="absolute -top-1 -right-1 bg-accent-brown text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                                 0

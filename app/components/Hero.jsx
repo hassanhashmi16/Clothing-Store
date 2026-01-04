@@ -19,7 +19,7 @@ export default function Hero() {
                     setProducts(response.data.data)
                 } else if (Array.isArray(response.data)) {
                     // Fallback in case the user's change didn't stick or for older versions
-                    setProducts(response.data )
+                    setProducts(response.data)
                 }
             } catch (error) {
                 console.error('Error fetching products for carousel:', error)
@@ -88,7 +88,7 @@ export default function Hero() {
                     <div className="absolute inset-0 bg-black/30" />
 
                     {/* Content Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center text-center px-4 pt-20">
+                    <div className="absolute inset-0 flex items-center justify-center text-center px-6 md:px-12 pt-20 pb-40 md:pb-0">
                         <div className={`max-w-4xl transition-all duration-1000 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
                             <p className="text-white/80 text-[10px] md:text-xs font-medium tracking-[0.4em] uppercase mb-4 md:mb-6">
                                 Featured Collection
@@ -96,14 +96,14 @@ export default function Hero() {
                             <h1 className="text-white text-3xl md:text-7xl lg:text-8xl font-serif tracking-tighter mb-8 md:mb-10 leading-tight">
                                 {product.name}
                             </h1>
-                            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
                                 <button
                                     onClick={scrollToProducts}
-                                    className="px-8 md:px-12 py-4 md:py-5 bg-white text-foreground hover:bg-[#f9f7f2] hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none shadow-xl"
+                                    className="w-full md:w-auto px-8 md:px-12 py-4 md:py-5 bg-white text-foreground hover:bg-[#f9f7f2] hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none shadow-xl"
                                 >
                                     Shop Now
                                 </button>
-                                <button className="px-8 md:px-12 py-4 md:py-5 bg-transparent text-white border border-white/40 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none backdrop-blur-md">
+                                <button className="w-full md:w-auto px-8 md:px-12 py-4 md:py-5 bg-transparent text-white border border-white/40 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none backdrop-blur-md">
                                     View Details
                                 </button>
                             </div>
@@ -117,21 +117,21 @@ export default function Hero() {
                 <>
                     <button
                         onClick={prevSlide}
-                        className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 z-30 p-2 text-white/50 hover:text-white transition-colors"
+                        className="absolute left-2 md:left-12 md:top-1/2 top-2/3 -translate-y-1/2 z-30 p-2 text-white/50 hover:text-white transition-colors"
                         aria-label="Previous slide"
                     >
-                        <ChevronLeft size={48} strokeWidth={1} />
+                        <ChevronLeft className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1} />
                     </button>
                     <button
                         onClick={nextSlide}
-                        className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 z-30 p-2 text-white/50 hover:text-white transition-colors"
+                        className="absolute right-2 md:right-12 md:top-1/2 top-2/3 -translate-y-1/2 z-30 p-2 text-white/50 hover:text-white transition-colors"
                         aria-label="Next slide"
                     >
-                        <ChevronRight size={48} strokeWidth={1} />
+                        <ChevronRight className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1} />
                     </button>
 
                     {/* Progress Bar Indicators */}
-                    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex gap-4">
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-4">
                         {products.map((_, index) => (
                             <button
                                 key={index}
