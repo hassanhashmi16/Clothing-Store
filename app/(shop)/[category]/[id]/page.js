@@ -4,12 +4,13 @@ import Product from "@/app/models/Product";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import Link from 'next/link';
+import AddToCartSection from "@/app/components/AddToCartSection";
 
 export default async function ProductPage({ params }) {
     const { category, id } = await params;
 
     await dbConnect();
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).lean();
 
     if (!product) {
         return (
@@ -92,58 +93,8 @@ export default async function ProductPage({ params }) {
                             </div>
                         )}
 
-                        {/* Sizes */}
-                        {product.sizes && product.sizes.length > 0 && (
-                            <div className="mb-8">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h2 className="text-[10px] tracking-[0.2em] uppercase font-medium text-stone-900">Select Size</h2>
-                                    <button className="text-[10px] tracking-[0.1em] text-stone-400 underline underline-offset-4 hover:text-stone-900 transition-colors">
-                                        Size Guide
-                                    </button>
-                                </div>
-                                <div className="flex flex-wrap gap-3">
-                                    {product.sizes.map((size) => (
-                                        <button
-                                            key={size}
-                                            className="min-w-[48px] h-12 border border-stone-200 flex items-center justify-center text-xs tracking-widest hover:border-stone-900 transition-colors"
-                                        >
-                                            {size}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Colors */}
-                        {product.colors && product.colors.length > 0 && (
-                            <div className="mb-12">
-                                <h2 className="text-[10px] tracking-[0.2em] uppercase font-medium text-stone-900 mb-4">Select Color</h2>
-                                <div className="flex flex-wrap gap-4">
-                                    {product.colors.map((color) => (
-                                        <button
-                                            key={color}
-                                            title={color}
-                                            className="group relative flex items-center justify-center"
-                                        >
-                                            <div
-                                                className="w-8 h-8 rounded-full border border-stone-200 transition-transform group-hover:scale-110"
-                                                style={{ backgroundColor: color.toLowerCase() }}
-                                            />
-                                            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] tracking-widest text-stone-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap uppercase">
-                                                {color}
-                                            </span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Note about Cart */}
-                        <div className="mt-auto pt-8 border-t border-stone-100">
-                            <p className="text-[10px] italic text-stone-400 text-center">
-                                Add to cart functionality coming soon
-                            </p>
-                        </div>
+                        {/* Interactive Section */}
+                        <AddToCartSection product={JSON.parse(JSON.stringify(product))} />
                     </div>
                 </div>
             </main>

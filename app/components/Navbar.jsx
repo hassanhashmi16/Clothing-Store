@@ -5,9 +5,11 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { ShoppingBag, User, Search, Menu, X, LogOut } from 'lucide-react'
 import { useSession, signIn, signOut } from 'next-auth/react'
+import { useCart } from '@/app/context/CartContext'
 
 export default function Navbar() {
     const { data: session, status } = useSession()
+    const { getCartCount } = useCart()
     const pathname = usePathname()
     const isHome = pathname === '/'
     const [isScrolled, setIsScrolled] = useState(false)
@@ -116,12 +118,15 @@ export default function Navbar() {
                             )}
                         </div>
 
-                        <button className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors relative`}>
+                        <Link
+                            href="/cart"
+                            className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors relative`}
+                        >
                             <ShoppingBag size={20} strokeWidth={1.5} />
                             <span className="absolute -top-1 -right-1 bg-accent-brown text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                                0
+                                {getCartCount()}
                             </span>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -144,36 +149,6 @@ export default function Navbar() {
                             <Search size={20} strokeWidth={1.5} />
                             <span className="text-sm">Search</span>
                         </button>
-
-                        {status === 'authenticated' ? (
-                            <div className="space-y-4">
-                                <div className="flex items-center space-x-3">
-                                    {session.user.image ? (
-                                        <img src={session.user.image} alt={session.user.name} className="w-8 h-8 rounded-full" />
-                                    ) : (
-                                        <div className="w-8 h-8 rounded-full bg-accent-brown/10 flex items-center justify-center text-accent-brown">
-                                            <User size={16} strokeWidth={1.5} />
-                                        </div>
-                                    )}
-                                    <span className="text-sm font-medium">{session.user.name}</span>
-                                </div>
-                                <button
-                                    onClick={() => signOut()}
-                                    className="flex items-center space-x-2 text-foreground/80 hover:text-accent-brown transition-colors w-full"
-                                >
-                                    <LogOut size={ 20} strokeWidth={1.5} />
-                                    <span className="text-sm">Sign Out</span>
-                                </button>
-                            </div>
-                        ) : (
-                            <button
-                                onClick={() => signIn('google')}
-                                className="flex items-center space-x-2 text-foreground/80 hover:text-accent-brown transition-colors w-full"
-                            >
-                                <User size={20} strokeWidth={1.5} />
-                                <span className="text-sm">Login with Google</span>
-                            </button>
-                        )}
                     </div>
                 </div>
             </div>

@@ -18,6 +18,7 @@ export const metadata = {
 };
 
 import AuthProvider from "./components/AuthProvider";
+import { CartProvider } from "./context/CartContext";
 
 export default function RootLayout({ children }) {
   return (
@@ -26,9 +27,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <main>
-            {children}
-          </main>
+          <CartProvider>
+            <main>
+              {children}
+            </main>
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>
