@@ -35,6 +35,11 @@ const userSchema = new mongoose.Schema({
         unique: true
     },
 
+    emailVerified: {
+        type: Date,
+        default: null
+    },
+
     image: {
         type: String // Google profile pic
     },

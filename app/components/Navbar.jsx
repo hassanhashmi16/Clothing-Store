@@ -1,15 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { usePathname  } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { ShoppingBag, User, Search, Menu, X } from 'lucide-react'
+import { ShoppingBag, User, Search, Menu, X, LogOut } from 'lucide-react'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 export default function Navbar() {
+    const { data: session, status } = useSession()
     const pathname = usePathname()
     const isHome = pathname === '/'
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -69,9 +72,50 @@ export default function Navbar() {
                         <button className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors hidden sm:block`}>
                             <Search size={20} strokeWidth={1.5} />
                         </button>
-                        <button className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}>
-                            <User size={20} strokeWidth={1.5} />
-                        </button>
+
+                        <div className="relative">
+                            {status === 'authenticated' ? (
+                                <div className="flex items-center space-x-4">
+                                    <button
+                                        onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                        className="flex items-center space-x-2 group"
+                                    >
+                                        {session.user.image ? (
+                                            <img src={session.user.image} alt={session.user.name} className="w-8 h-8 rounded-full border border-accent-brown/20 group-hover:border-accent-brown transition-all" />
+                                        ) : (
+                                            <div className="w-8 h-8 rounded-full bg-accent-brown/10 flex items-center justify-center text-accent-brown border border-accent-brown/20 group-hover:border-accent-brown transition-all">
+                                                <User size={16} strokeWidth={1.5} />
+                                            </div>
+                                        )}
+                                    </button>
+
+                                    {isUserMenuOpen && (
+                                        <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-foreground/5 shadow-xl py-2 z-50 rounded-sm">
+                                            <div className="px-4 py-2 border-b border-foreground/5 mb-2">
+                                                <p className="text-xs text-foreground/50 uppercase tracking-widest font-semibold">User</p>
+                                                <p className="text-sm font-medium truncate">{session.user.name}</p>
+                                            </div>
+                                            <button
+                                                onClick={() => signOut()}
+                                                className="w-full text-left px-4 py-2 text-sm text-foreground/70 hover:text-accent-brown hover:bg-accent-brown/5 flex items-center space-x-2 transition-colors"
+                                            >
+                                                <LogOut size={16} strokeWidth={1.5} />
+                                                <span>Sign Out</span>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => signIn('google')}
+                                    className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors flex items-center space-x-1`}
+                                >
+                                    <User size={20} strokeWidth={1.5} />
+                                    <span className="text-sm font-medium hidden sm:block">Login</span>
+                                </button>
+                            )}
+                        </div>
+
                         <button className={`${shouldShowGlass ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors relative`}>
                             <ShoppingBag size={20} strokeWidth={1.5} />
                             <span className="absolute -top-1 -right-1 bg-accent-brown text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
@@ -95,11 +139,41 @@ export default function Navbar() {
                             {link.name}
                         </Link>
                     ))}
-                    <div className="pt-2">
-                        <button className="flex items-center space-x-2 text-foreground/80 hover:text-foreground transition-colors">
+                    <div className="pt-4 border-t border-foreground/5 space-y-4">
+                        <button className="flex items-center space-x-2 text-foreground/80 hover:text-foreground transition-colors w-full">
                             <Search size={20} strokeWidth={1.5} />
                             <span className="text-sm">Search</span>
                         </button>
+
+                        {status === 'authenticated' ? (
+                            <div className="space-y-4">
+                                <div className="flex items-center space-x-3">
+                                    {session.user.image ? (
+                                        <img src={session.user.image} alt={session.user.name} className="w-8 h-8 rounded-full" />
+                                    ) : (
+                                        <div className="w-8 h-8 rounded-full bg-accent-brown/10 flex items-center justify-center text-accent-brown">
+                                            <User size={16} strokeWidth={1.5} />
+                                        </div>
+                                    )}
+                                    <span className="text-sm font-medium">{session.user.name}</span>
+                                </div>
+                                <button
+                                    onClick={() => signOut()}
+                                    className="flex items-center space-x-2 text-foreground/80 hover:text-accent-brown transition-colors w-full"
+                                >
+                                    <LogOut size={ 20} strokeWidth={1.5} />
+                                    <span className="text-sm">Sign Out</span>
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => signIn('google')}
+                                className="flex items-center space-x-2 text-foreground/80 hover:text-accent-brown transition-colors w-full"
+                            >
+                                <User size={20} strokeWidth={1.5} />
+                                <span className="text-sm">Login with Google</span>
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

@@ -17,15 +17,19 @@ export const metadata = {
   description: "A sleek and modern clothing store experience.",
 };
 
+import AuthProvider from "./components/AuthProvider";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main>
-          {children}
-        </main>
+        <AuthProvider>
+          <main>
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
