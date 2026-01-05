@@ -74,7 +74,7 @@ export default async function CategoryPage({ params, searchParams }) {
                         {products.map((product) => (
                             <Link
                                 key={product._id}
-                                href={`/products/${product._id}`}
+                                href={`/${category}/${product._id}`}
                                 className="group flex flex-col"
                             >
                                 <div className="relative aspect-[3/4] overflow-hidden bg-stone-100 rounded-sm mb-4">
