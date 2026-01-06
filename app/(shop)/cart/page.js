@@ -137,10 +137,10 @@ export default function CartPage() {
                                     </div>
                                 </div>
 
-                                <button className="w-full bg-stone-900 text-white py-4 text-[10px] font-semibold tracking-[0.2em] uppercase rounded-sm hover:bg-stone-800 transition-all flex items-center justify-center space-x-3 mb-4">
+                                <Link href="/checkout/shipping" className="w-full bg-stone-900 text-white py-4 text-[10px] font-semibold tracking-[0.2em] uppercase rounded-sm hover:bg-stone-800 transition-all flex items-center justify-center space-x-3 mb-4">
                                     <span>Secure Checkout</span>
                                     <ArrowRight size={14} />
-                                </button>
+                                </Link>
 
                                 <p className="text-[9px] text-stone-400 text-center uppercase tracking-widest leading-relaxed">
                                     Complimentary shipping on orders over $500. <br />
