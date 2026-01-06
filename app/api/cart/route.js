@@ -133,3 +133,26 @@ export async function PATCH(req) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
+export async function PUT() {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        await dbConnect();
+        const cart = await Cart.findOne({ userId: session.user.id });
+
+        if (cart) {
+            cart.items = [];
+            cart.updatedAt = Date.now();
+            await cart.save();
+        }
+
+        return NextResponse.json({ items: [] });
+    } catch (error) {
+        console.error("Cart PUT Error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}

@@ -78,6 +78,15 @@ export function CartProvider({ children }) {
         }
     };
 
+    const clearCart = async () => {
+        try {
+            await axios.put('/api/cart');
+            setCart({ items: [] });
+        } catch (error) {
+            console.error('Failed to clear cart:', error);
+        }
+    };
+
     const getCartCount = () => {
         return cart.items.reduce((total, item) => total + item.quantity, 0);
     };
@@ -101,6 +110,7 @@ export function CartProvider({ children }) {
                 getCartCount,
                 getCartTotal,
                 fetchCart,
+                clearCart,
             }}
         >
             {children}

@@ -2,25 +2,30 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
 import { useCart } from '@/app/context/CartContext';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
-import { ChevronRight, ShoppingBag, Truck, CreditCard, ShieldCheck, Wallet } from 'lucide-react';
+import { ChevronRight, ShoppingBag, Truck, CreditCard, ShieldCheck, Wallet, Loader2 } from 'lucide-react';
 
 export default function ShippingPage() {
-    const { cart, getCartTotal } = useCart();
+    const { cart, getCartTotal, clearCart } = useCart();
+    const router = useRouter();
+    const { data: session } = useSession();
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
+        email: session?.user?.email || '',
+        firstName: session?.user?.name?.split(' ')[0] || '',
+        lastName: session?.user?.name?.split(' ').slice(1).join(' ') || '',
         address: '',
-        apartment: '',
         city: '',
-        country: 'Pakistan',
         state: '',
         zipCode: '',
+        country: 'Pakistan',
         shippingMethod: 'standard',
-        paymentMethod: 'cod' // 'cod' or 'online'
+        paymentMethod: 'cod'
     });
 
     const handleInputChange = (e) => {
@@ -31,6 +36,49 @@ export default function ShippingPage() {
     const subtotal = getCartTotal();
     const shippingCost = formData.shippingMethod === 'express' ? 25 : 0;
     const total = subtotal + shippingCost;
+
+    const handlePlaceOrder = async (e) => {
+        e.preventDefault();
+        if (!session) {
+            alert('Please sign in to complete your order');
+            return;
+        }
+
+        if (cart.items.length === 0) {
+            alert('Your bag is empty');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const orderData = {
+                shippingDetails: {
+                    address: formData.address,
+                    city: formData.city,
+                    state: formData.state,
+                    zipCode: formData.zipCode,
+                    country: formData.country,
+                },
+                subtotal,
+                shippingCost,
+                total,
+                paymentMethod: formData.paymentMethod
+            };
+
+            const response = await axios.post('/api/orders', orderData);
+
+            if (response.status === 201) {
+                // Cart is cleared by the backend, but we update context too
+                clearCart();
+                router.push(`/checkout/success?orderId=${response.data._id}`);
+            }
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert(error.response?.data?.error || 'Failed to place order. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-white flex flex-col font-sans">
@@ -108,6 +156,30 @@ export default function ShippingPage() {
                                         name="city"
                                         placeholder="..."
                                         value={formData.city}
+                                        onChange={handleInputChange}
+                                        className="w-full px-0 py-2 bg-transparent border-b border-stone-100 text-sm focus:outline-none focus:border-stone-900 transition-colors placeholder:text-stone-200 font-light"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[9px] uppercase tracking-[0.2em] text-stone-400 block mb-1 font-light">State / Province</label>
+                                    <input
+                                        type="text"
+                                        name="state"
+                                        placeholder="..."
+                                        value={formData.state}
+                                        onChange={handleInputChange}
+                                        className="w-full px-0 py-2 bg-transparent border-b border-stone-100 text-sm focus:outline-none focus:border-stone-900 transition-colors placeholder:text-stone-200 font-light"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[9px] uppercase tracking-[0.2em] text-stone-400 block mb-1 font-light">Zip / Postal Code</label>
+                                    <input
+                                        type="text"
+                                        name="zipCode"
+                                        placeholder="..."
+                                        value={formData.zipCode}
                                         onChange={handleInputChange}
                                         className="w-full px-0 py-2 bg-transparent border-b border-stone-100 text-sm focus:outline-none focus:border-stone-900 transition-colors placeholder:text-stone-200 font-light"
                                         required
@@ -196,9 +268,19 @@ export default function ShippingPage() {
                         </section>
 
                         <div className="pt-8 text-center sm:text-left">
-                            <button className="w-full sm:w-auto px-12 py-5 bg-stone-900 text-white text-[11px] font-semibold tracking-[0.3em] uppercase hover:bg-stone-800 transition-all flex items-center justify-center space-x-4 group mx-auto sm:mx-0">
-                                <span>{formData.paymentMethod === 'cod' ? 'Place Order' : 'Proceed to Payment'}</span>
-                                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            <button
+                                onClick={handlePlaceOrder}
+                                disabled={loading}
+                                className="w-full sm:w-auto px-12 py-5 bg-stone-900 text-white text-[11px] font-semibold tracking-[0.3em] uppercase hover:bg-stone-800 disabled:bg-stone-400 transition-all flex items-center justify-center space-x-4 group mx-auto sm:mx-0"
+                            >
+                                {loading ? (
+                                    <Loader2 size={16} className="animate-spin" />
+                                ) : (
+                                    <>
+                                        <span>{formData.paymentMethod === 'cod' ? 'Place Order' : 'Proceed to Payment'}</span>
+                                        <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                    </>
+                                )}
                             </button>
                             <p className="mt-4 text-[9px] text-stone-400 tracking-[0.2em] uppercase font-light">
                                 SSL Secure checkout encryption enabled
