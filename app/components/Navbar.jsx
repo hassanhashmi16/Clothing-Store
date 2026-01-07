@@ -33,7 +33,7 @@ export default function Navbar() {
     useEffect(() => {
         if (isSearchOpen && allProducts.length === 0) {
             axios.get('/api/products')
-                .then(res => setAllProducts(res.data))
+                .then(res => setAllProducts(res.data.data || []))
                 .catch(err => console.error("Search fetch error:", err))
         }
     }, [isSearchOpen])
@@ -182,7 +182,7 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu (Overlay) */}
-            <div className={`md:hidden absolute top-full left-0 w-full bg-background border-t border-foreground/5 transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
+            <div className={`md:hidden absolute top-full left-0 w-full bg-white border-t border-stone-100 shadow-xl transition-all duration-300 overflow-y-auto ${isMobileMenuOpen ? 'max-h-[85vh] opacity-100' : 'max-h-0 opacity-0'}`}>
                 <div className="px-4 py-4 space-y-4">
                     {navLinks.map((link) => (
                         <Link
@@ -220,73 +220,93 @@ export default function Navbar() {
             </div>
 
             {/* Search Overlay */}
-            <div className={`fixed inset-0 z-[60] bg-white transition-all duration-500 overflow-hidden ${isSearchOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col">
-                    <div className="flex justify-end py-8">
-                        <button
-                            onClick={() => setIsSearchOpen(false)}
-                            className="text-stone-400 hover:text-stone-900 transition-colors flex items-center space-x-2 uppercase text-[10px] tracking-[0.2em] font-semibold"
-                        >
-                            <span>Close</span>
-                            <X size={20} />
-                        </button>
-                    </div>
+            <div className={`fixed inset-0 z-[60] transition-all duration-500 ${isSearchOpen ? 'visible' : 'invisible'}`}>
+                {/* Backdrop */}
+                <div
+                    className={`absolute inset-0 bg-stone-900/20 backdrop-blur-sm transition-opacity duration-500 ${isSearchOpen ? 'opacity-100' : 'opacity-0'}`}
+                    onClick={() => setIsSearchOpen(false)}
+                />
 
-                    <div className="flex-grow flex items-center justify-center">
-                        <form onSubmit={handleSearch} className="w-full max-w-4xl space-y-8">
-                            <div className="relative group">
-                                <input
-                                    autoFocus={isSearchOpen}
-                                    type="text"
-                                    placeholder="Search our collection..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full bg-transparent border-b border-stone-100 py-6 text-4xl sm:text-6xl font-serif italic text-stone-900 placeholder:text-stone-100 focus:outline-none focus:border-stone-900 transition-all duration-500"
-                                />
-                                <button type="submit" className="absolute right-0 bottom-8 text-stone-300 group-focus-within:text-stone-900 transition-colors">
-                                    <Search size={32} strokeWidth={1} />
-                                </button>
-                            </div>
+                {/* Search Drawer */}
+                <div className={`absolute top-0 left-0 w-full bg-white shadow-2xl transition-transform duration-500 ease-out ${isSearchOpen ? 'translate-y-0' : '-translate-y-full'}`}>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                        <div className="flex justify-end mb-8">
+                            <button
+                                onClick={() => setIsSearchOpen(false)}
+                                className="text-stone-400 hover:text-stone-900 transition-colors flex items-center space-x-2 uppercase text-[10px] tracking-[0.2em] font-semibold group"
+                            >
+                                <span className="group-hover:mr-2 transition-all">Close</span>
+                                <X size={20} strokeWidth={1.5} />
+                            </button>
+                        </div>
 
-                            {searchResults.length > 0 && (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pt-12 animate-in fade-in duration-500">
-                                    {searchResults.map((product) => (
-                                        <Link
-                                            key={product._id}
-                                            href={`/${product.category}/${product._id}`}
-                                            onClick={() => setIsSearchOpen(false)}
-                                            className="group space-y-4"
+                        <div className="flex justify-center">
+                            <form onSubmit={handleSearch} className="w-full max-w-3xl">
+                                <div className="relative group border-b border-stone-200 focus-within:border-stone-900 transition-colors duration-300">
+                                    <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-stone-900 transition-colors" size={24} strokeWidth={1.5} />
+                                    <input
+                                        autoFocus={isSearchOpen}
+                                        type="text"
+                                        placeholder="What are you looking for?"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full bg-transparent py-4 pl-10 pr-12 text-2xl font-light text-stone-900 placeholder:text-stone-300 focus:outline-none"
+                                    />
+                                    {searchQuery && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setSearchQuery('')}
+                                            className="absolute right-0 top-1/2 -translate-y-1/2 text-stone-300 hover:text-stone-900 transition-colors"
                                         >
-                                            <div className="aspect-[3/4] overflow-hidden bg-stone-50 border border-stone-100">
-                                                <img
-                                                    src={product.images[0]}
-                                                    alt={product.name}
-                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                                />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <h4 className="text-[10px] uppercase tracking-[0.2em] text-stone-900 font-medium">{product.name}</h4>
-                                                <p className="text-[10px] text-stone-400 font-serif italic">${product.price.toFixed(2)}</p>
-                                            </div>
-                                        </Link>
-                                    ))}
+                                            <X size={16} />
+                                        </button>
+                                    )}
                                 </div>
-                            )}
 
-                            <div className="flex flex-wrap gap-4 pt-12 border-t border-stone-50">
-                                <span className="text-[10px] uppercase tracking-[0.2em] text-stone-400 font-semibold">Quick Search:</span>
-                                {['New Arrivals', 'Silk Blends', 'Minimalist Coats', 'Archives'].map((tag) => (
-                                    <button
-                                        key={tag}
-                                        type="button"
-                                        onClick={() => setSearchQuery(tag)}
-                                        className="text-[10px] uppercase tracking-[0.2em] text-stone-900 hover:text-stone-400 transition-colors font-medium underline underline-offset-4 decoration-stone-200"
-                                    >
-                                        {tag}
-                                    </button>
-                                ))}
-                            </div>
-                        </form>
+                                {searchResults.length > 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 pt-10 animate-in fade-in slide-in-from-top-4 duration-500">
+                                        {searchResults.map((product) => (
+                                            <Link
+                                                key={product._id}
+                                                href={`/${product.category}/${product._id}`}
+                                                onClick={() => setIsSearchOpen(false)}
+                                                className="group space-y-3"
+                                            >
+                                                <div className="aspect-[3/4] overflow-hidden bg-stone-50">
+                                                    <img
+                                                        src={product.images[0]}
+                                                        alt={product.name}
+                                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <h4 className="text-[10px] uppercase tracking-[0.2em] text-stone-900 font-medium truncate">{product.name}</h4>
+                                                    <p className="text-[10px] text-stone-500 font-serif italic">${product.price.toFixed(2)}</p>
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="pt-10">
+                                        <div className="flex flex-col items-center justify-center space-y-6 text-center">
+                                            <p className="text-[10px] uppercase tracking-[0.2em] text-stone-400 font-semibold">Popular Searches</p>
+                                            <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
+                                                {['New Arrivals', 'Coats', 'Silk', 'Accessories', 'Summer'].map((tag) => (
+                                                    <button
+                                                        key={tag}
+                                                        type="button"
+                                                        onClick={() => setSearchQuery(tag)}
+                                                        className="text-sm text-stone-600 hover:text-accent-brown transition-colors font-serif italic"
+                                                    >
+                                                        {tag}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
