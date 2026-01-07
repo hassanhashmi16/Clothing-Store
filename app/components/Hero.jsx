@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -49,7 +50,7 @@ export default function Hero() {
     }, [products.length, nextSlide])
 
     const scrollToProducts = () => {
-        const element = document.getElementById('featured-products')
+        const element = document.getElementById('products-grid')
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' })
         }
@@ -97,15 +98,18 @@ export default function Hero() {
                                 {product.name}
                             </h1>
                             <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
-                                <button
-                                    onClick={scrollToProducts}
-                                    className="w-full md:w-auto px-8 md:px-12 py-4 md:py-5 bg-white text-foreground hover:bg-[#f9f7f2] hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none shadow-xl"
+                                <Link
+                                    href={`/${product.category}/${product._id}`}
+                                    className="w-full md:w-auto px-8 md:px-12 py-4 md:py-5 bg-white text-foreground hover:bg-[#f9f7f2] hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none shadow-xl text-center"
                                 >
                                     Shop Now
-                                </button>
-                                <button className="w-full md:w-auto px-8 md:px-12 py-4 md:py-5 bg-transparent text-white border border-white/40 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none backdrop-blur-md">
+                                </Link>
+                                <Link
+                                    href={`/${product.category}/${product._id}`}
+                                    className="w-full md:w-auto px-8 md:px-12 py-4 md:py-5 bg-transparent text-white border border-white/40 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-none backdrop-blur-md text-center"
+                                >
                                     View Details
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     </div>

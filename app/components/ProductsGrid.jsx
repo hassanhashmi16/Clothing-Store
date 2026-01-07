@@ -25,7 +25,7 @@ export default async function ProductGrid() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {products.map((product) => (
-                    <div key={product._id} className="group flex flex-col cursor-pointer">
+                    <Link key={product._id} href={`/${product.category}/${product._id}`} className="group flex flex-col cursor-pointer">
                         <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 rounded-sm mb-4">
                             <img
                                 src={product.images[0]}
@@ -38,7 +38,7 @@ export default async function ProductGrid() {
                             <h3 className="text-sm font-medium tracking-tight text-gray-900 line-clamp-1">{product.name}</h3>
                             <p className="text-sm text-gray-500 font-light">${product.price}</p>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </section>
